@@ -8,7 +8,7 @@ model = YOLO("yolov8n.yaml")  # 从随机权重开始
 # 2. 配置 DINOv3 教师模型 
 teacher_config = {
     "teacher": "dinov3/vitl16",           # 指定教师模型架构
-    #"teacher_weights": str(Path("model/").absolute()) # 若使用本地权重，指定路径
+    #"teacher_weights": str(Path("").absolute()) # 若使用本地权重，指定路径
 }
 
 # 3. 执行蒸馏预训练
