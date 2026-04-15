@@ -37,7 +37,7 @@ DINO_YOLO/
 ```
 
 ## 数据集说明
-- 标注数据集配置见 `datasets/labeled/dataset.yaml`，支持COCO格式，默认80类（如person, car, dog等）。
+- 标注数据集配置见 `datasets/labeled/dataset.yaml`。
 - 无标签图片放于 `datasets/unlabeled/images/`。
 
 ## 环境依赖
