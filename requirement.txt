@@ -1,0 +1,44 @@
+# Core Deep Learning Framework
+torch>=2.0.0
+torchvision>=0.15.0
+
+# LightlyTrain for Self-Supervised Learning
+lightly-train[ultralytics]>=0.7.0
+
+# YOLO Object Detection
+ultralytics>=8.0.0
+
+# Computer Vision & Image Processing
+opencv-python>=4.8.0
+pillow>=10.0.0
+albumentations>=1.3.0
+
+# Scientific Computing
+numpy>=1.24.0
+scipy>=1.10.0
+scikit-learn>=1.3.0
+
+# Data Processing & Analysis
+pandas>=2.0.0
+pycocotools>=2.0.7
+tqdm>=4.65.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+tensorboard>=2.13.0
+
+# Utilities
+pyyaml>=6.0
+easydict>=1.10
+pathlib2>=2.3.0
+joblib>=1.3.0
+
+# Development & Debugging
+ipython>=8.0.0
+jupyter>=1.0.0
+pytest>=7.0.0
+
+# Optional: For better performance
+timm>=0.9.0  # DINOv3 backbone
+einops>=0.6.0  # Tensor operations
