@@ -23,10 +23,13 @@ DINO_YOLO/
 │   │   │   └── val/
 │   │   │   └── test/
 │   │   └── labels/
+│   │   │   ├── train/
+│   │   │   └── val/
+│   │   │   └── test/
 │   └── unlabeled/      # 无标签图片
 │       └── images/
 ├── model/
-│   └── dinov3_vitl16_pretrain.pth  # DINOv3教师模型权重
+│   └──   #用于存储教师模型本地权重
 ├── scripts/
 │   ├── pretrain.py     # 自监督预训练脚本
 │   ├── finetune.py     # 微调脚本
