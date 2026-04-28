@@ -13,7 +13,7 @@
 ## 目录结构
 
 ```text
-full_project/
+DINO_YOLO/
   configs/
     default.yaml              # 全局配置
   data/
