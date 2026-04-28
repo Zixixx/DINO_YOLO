@@ -1,0 +1,9 @@
+train: images/train
+val: images/val
+test: images/test
+
+nc: #类别总数
+names:  #类别名
+  0: ...
+  1: ...
+  2: ...
