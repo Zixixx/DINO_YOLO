@@ -1,6 +1,6 @@
 # 基于DINO与YOLO的自监督目标检测方案
 
-这是一个自监督目标检测项目，目标是用大量无标注图像降低目标检测任务的标注成本。项目采用冻结的 DINO 教师模型为 YOLO 学生模型提供逐位置语义监督，再将蒸馏后的 YOLO 用于有监督微调和检测评估。
+这是一个自监督目标检测工程，目标是用大量无标注图像降低目标检测任务的标注成本。项目采用冻结的 DINO 教师模型为 YOLO 学生模型提供逐位置语义监督，再将蒸馏后的 YOLO 用于有监督微调和检测评估。
 
 ## 核心方法
 
@@ -86,11 +86,15 @@ conda activate dino_yolo
 pip install -r requirements.txt
 ```
 
-`prepare.py` 会检查数据目录、本地 DINO 权重、本地 YOLO 权重、本地 DINO 仓库和关键 Python 包是否存在。
+## 项目流程
 
-## 运行流程
+### 1. 配置config/default.yaml
 
-1. 数据检查：
+```text
+config/default.yaml中已注释各个参数的含义
+```
+
+### 2. 数据检查：
 
 ```bash
 python scripts/prepare.py
@@ -98,7 +102,7 @@ python scripts/prepare.py
 
 脚本会检查数据目录、本地 DINO 权重、本地 YOLO 权重、本地 DINO 仓库和关键 Python 包是否存在。
 
-2. 自监督蒸馏预训练：
+### 3. 自监督蒸馏预训练：
 
 ```bash
 python scripts/pretrain.py
@@ -111,7 +115,7 @@ outputs/pretrain/best.pt
 outputs/pretrain/last.pt
 ```
 
-3. 标注数据微调：
+### 4. 标注数据微调：
 
 ```bash
 python scripts/finetune.py
@@ -123,7 +127,7 @@ python scripts/finetune.py
 outputs/finetune/dino_yolo/weights/best.pt
 ```
 
-4. 评估检测效果：
+### 5. 评估检测效果：
 
 ```bash
 python scripts/evaluate.py
