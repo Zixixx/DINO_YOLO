@@ -1,0 +1,164 @@
+# 实验名称：用于标识当前训练方案，后续可用于日志或输出目录命名。
+project_name: dino_yolo
+
+# 随机种子：固定数据打乱、初始化等随机行为，提升实验可复现性。
+seed: 42
+
+# 路径配置：所有相对路径都以项目根目录为基准。
+paths:
+  # 无标注图像目录，用于 distill 自监督蒸馏阶段。
+  unlabeled_images: data/unlabeled/images
+
+  # YOLO 格式数据集配置文件，用于 finetune 和 evaluate 阶段。
+  labeled_data_yaml: data/labeled/dataset.yaml
+
+  # 训练输出目录，保存日志、预训练 checkpoint、微调模型等。
+  output_dir: outputs
+
+  # DINO 本地权重文件；训练脚本不会自动下载。
+  dino_weights: null
+
+  # YOLO 本地权重文件；训练脚本不会自动下载。
+  yolo_weights: null
+
+# 模型配置。
+models:
+  dino:
+    # DINO 教师模型架构名称，需要与本地 DINO torch.hub 仓库中的入口函数一致，如"dinov3_vit7b16"。
+    arch: null
+
+    # ViT patch 大小；用于把 DINO tokens 还原为空间特征图。
+    patch_size: 16
+
+    # DINO 输出特征维度；ViT-7B 通常为 4096，若权重实现不同需同步修改。
+    embed_dim: 4096
+
+    # DINO 教师输入尺寸；会在 teacher forward 前将图像 resize 到该尺寸。
+    image_size: 518
+
+    # DINO 教师精度：fp32 最稳但显存高；fp16 省显存；bf16 通常更稳但需硬件支持。
+    precision: fp16
+
+    # DINO 加载来源：local 表示从本地仓库加载。
+    source: local
+
+    # 本地 DINO torch.hub 仓库路径，目录中应包含 hubconf.py。
+    repo_or_dir: null
+
+    # 是否信任 torch.hub 仓库代码；本地仓库一般设为 true。
+    trust_repo: true
+
+  yolo:
+    # 学生模型名称，仅用于说明和记录；实际模型由 paths.yolo_weights 加载。
+    model: yolo
+
+    # 从 YOLO 的哪一层捕获中间特征；-2 表示倒数第二层。
+    feature_layer: -2
+
+    # 蒸馏阶段是否冻结最后检测头，让训练更集中于 backbone/neck 表示学习。
+    freeze_detection_head: true
+
+# 自监督蒸馏预训练配置。
+distill:
+  # 是否从已有蒸馏模型继续训练。
+  resume: false
+
+  # 已有模型的路径；resume 为 true 时使用。
+  resume_checkpoint: null
+
+  # 预训练轮数。
+  epochs: 100
+
+  # 预训练 batch size。
+  batch_size: 2
+
+  # 梯度累积步数；有效 batch size = batch_size * accumulate_steps。
+  accumulate_steps: 1
+
+  # YOLO 学生输入尺寸；无标注图像会 resize 到该尺寸。
+  image_size: 640
+
+  # DataLoader 进程数。
+  num_workers: 4
+
+  # 预训练优化器类型，可选: AdamW, Adam, SGD。
+  optimizer: AdamW
+
+  # 预训练初始学习率，用于优化 YOLO 可训练参数和投影头。
+  lr: 0.0001
+
+  # 预训练权重衰减，抑制过拟合和权重过大。
+  weight_decay: 0.0005
+
+  # SGD 动量；仅当 distill.optimizer 为 SGD 时使用。
+  momentum: 0.9
+
+  # 是否启用 AMP 混合精度；CUDA 上建议开启以降低显存和提升速度。
+  amp: true
+
+  # 是否在蒸馏阶段对 YOLO student 权重启用 EMA；DINO teacher 不做 EMA。
+  use_ema: true
+
+  # YOLO student EMA 衰减系数；越接近 1 越平滑，但响应越慢。
+  ema_decay: 0.999
+
+  # 梯度裁剪阈值；设为 0 可关闭裁剪。
+  grad_clip_norm: 10.0
+
+  # 每隔多少 step 写一次 TensorBoard loss 日志。
+  log_interval: 20
+
+  # 每隔多少 epoch 额外保存一个 epoch_xxx.pt checkpoint。
+  save_interval: 10
+
+  # 余弦蒸馏损失权重；如果加入其他 loss，可用它调节蒸馏项强度。
+  cosine_loss_weight: 1.0
+
+# 有标注数据微调配置。
+finetune:
+  # 是否让 Ultralytics 加载上次微调的模型继续训练。
+  resume: false
+
+  # 微调训练轮数。
+  epochs: 100
+
+  # 微调输入尺寸。
+  image_size: 640
+
+  # 微调 batch size。
+  batch_size: 4
+
+  # 是否启用 Ultralytics AMP。
+  amp: false
+
+  # 是否生成训练曲线、标签图、混淆矩阵等。
+  plots: true
+
+  # 训练设备；0 表示 cuda:0，也可按 Ultralytics 规则改成 cpu 或多卡字符串。
+  device: 0
+
+  # Ultralytics DataLoader worker 数量。
+  workers: 4
+
+  # Ultralytics 优化器类型。
+  optimizer: SGD
+
+  # 初始学习率。
+  lr0: 0.01
+
+  # 最终学习率比例，Ultralytics 会用它控制学习率调度末端。
+  lrf: 0.01
+
+  # SGD 动量。
+  momentum: 0.937
+
+  # 微调阶段权重衰减。
+  weight_decay: 0.0005
+
+# 评估配置。
+evaluate:
+  # 评估输入尺寸。
+  image_size: 640
+
+  # 评估设备；0 表示 cuda:0。
+  device: 0
