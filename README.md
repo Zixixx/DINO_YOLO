@@ -28,8 +28,8 @@ DINO_YOLO/
       labels/test/
   model/                      # 放置本地 DINO 权重、DINO 仓库和 YOLO 权重
   scripts/
-    prepare.py
-    pretrain.py
+    check.py
+    distill.py
     finetune.py
     evaluate.py
   src/
@@ -97,7 +97,7 @@ config/default.yaml中已注释各个参数的含义
 ### 2. 数据检查：
 
 ```bash
-python scripts/prepare.py
+python scripts/check.py
 ```
 
 脚本会检查数据目录、本地 DINO 权重、本地 YOLO 权重、本地 DINO 仓库和关键 Python 包是否存在。
@@ -105,14 +105,14 @@ python scripts/prepare.py
 ### 3. 自监督蒸馏预训练：
 
 ```bash
-python scripts/pretrain.py
+python scripts/distill.py
 ```
 
 输出：
 
 ```text
-outputs/pretrain/best.pt
-outputs/pretrain/last.pt
+outputs/distill/best.pt
+outputs/distill/last.pt
 ```
 
 ### 4. 标注数据微调：
@@ -134,6 +134,6 @@ python scripts/evaluate.py
 ```
 
 ## 致谢
-
 - [DINOv3](https://github.com/facebookresearch/dinov3)
 - [Ultralytics YOLO](https://github.com/ultralytics/ultralytics)
+- 
